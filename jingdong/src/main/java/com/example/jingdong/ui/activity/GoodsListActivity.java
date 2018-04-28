@@ -41,6 +41,7 @@ public class GoodsListActivity extends AppCompatActivity implements GoodsListVie
     public void showGoods(List<GoodsListBean.DataBean> data) {
         GoodsListRvAdapter goodsListRvAdapter = new GoodsListRvAdapter(data, this);
         rv_goodslist.setAdapter(goodsListRvAdapter);
+
     }
 
     @Override
