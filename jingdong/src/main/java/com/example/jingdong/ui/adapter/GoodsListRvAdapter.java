@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.jingdong.R;
 import com.example.jingdong.bean.GoodsListBean;
-import com.example.jingdong.ui.inter.OnItemClickListener;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class GoodsListRvAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void OnItemClick(GoodsListBean.DataBean dataBean);
     }
     //设置点击事件
-    public void setOnItemClickListener(OnListItemClickListener onListItemClickListener){
+    public void setOnListItemClickListener(OnListItemClickListener onListItemClickListener){
         this.onListItemClickListener=onListItemClickListener;
     }
 

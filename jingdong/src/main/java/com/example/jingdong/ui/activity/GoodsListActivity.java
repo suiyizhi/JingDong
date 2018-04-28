@@ -41,7 +41,15 @@ public class GoodsListActivity extends AppCompatActivity implements GoodsListVie
     public void showGoods(List<GoodsListBean.DataBean> data) {
         GoodsListRvAdapter goodsListRvAdapter = new GoodsListRvAdapter(data, this);
         rv_goodslist.setAdapter(goodsListRvAdapter);
-
+        //设置点击事件
+        goodsListRvAdapter.setOnListItemClickListener(new GoodsListRvAdapter.OnListItemClickListener() {
+            @Override
+            public void OnItemClick(GoodsListBean.DataBean dataBean) {
+                Intent intent = new Intent(GoodsListActivity.this, ListDetailsActivity.class);
+                intent.putExtra("bean",dataBean);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

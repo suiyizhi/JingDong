@@ -1,8 +1,9 @@
 package com.example.jingdong.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GoodsListBean {
+public class GoodsListBean implements Serializable{
 
     /**
      * msg : 请求成功
@@ -48,7 +49,7 @@ public class GoodsListBean {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class DataBean implements Serializable{
         /**
          * bargainPrice : 111.99
          * createtime : 2017-10-14T21:39:05
