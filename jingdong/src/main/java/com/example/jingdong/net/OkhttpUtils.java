@@ -97,20 +97,14 @@ public class OkhttpUtils {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
+
+                final String string = response.body().string();
+
                 //把回调放到主线程里
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        //已经在主线程运行了
-                        final String string;
-                        try {
-                            //拿到服务器返回的json字符串
-                            string = response.body().string();
-                            onNetListener.onSuccess(string);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                        onNetListener.onSuccess(string);
                     }
                 });
 

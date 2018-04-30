@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.example.jingdong.R;
 import com.example.jingdong.bean.GoodsListBean;
+import com.example.jingdong.presenter.AddCarPresenterImp;
+import com.example.jingdong.ui.inter.AddCarView;
 import com.example.jingdong.util.GlideImageLoader;
 import com.example.jingdong.util.SpUtil;
 import com.umeng.socialize.ShareAction;
@@ -23,7 +25,7 @@ import com.youth.banner.Banner;
 import java.util.Arrays;
 import java.util.List;
 
-public class ListDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class ListDetailsActivity extends AppCompatActivity implements View.OnClickListener,AddCarView {
 
     private ImageView ivShare;
     private Banner banner_detail;
@@ -34,6 +36,7 @@ public class ListDetailsActivity extends AppCompatActivity implements View.OnCli
     private ImageView img_back;
     private TextView tv_ShopCar;
     private TextView tv_AddCar;
+    private AddCarPresenterImp addCarPresenterImp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +50,18 @@ public class ListDetailsActivity extends AppCompatActivity implements View.OnCli
         setData();
         //设置监听
         setListener();
+
+        //绑定
+        addCarPresenterImp = new AddCarPresenterImp(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_ShopCar:
+                //跳转到购物车页面
+                Intent intent = new Intent(ListDetailsActivity.this, ShopCarActivity.class);
+                startActivity(intent);
                 break;
             case R.id.tv_AddCar:
                 addCar();
@@ -67,7 +76,10 @@ public class ListDetailsActivity extends AppCompatActivity implements View.OnCli
             Intent intent = new Intent(ListDetailsActivity.this, LoginActivity.class);
             startActivity(intent);
         }else {
-            //以登录加购购物车
+            //已经登录加购购物车
+            String token = SpUtil.getString(ListDetailsActivity.this, "token", "");
+            //添加购物车
+            addCarPresenterImp.addCar(uid,dataBean.getPid()+"",token);
         }
     }
 
@@ -170,4 +182,8 @@ public class ListDetailsActivity extends AppCompatActivity implements View.OnCli
     };
 
 
+    @Override
+    public void showMsg(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 }
