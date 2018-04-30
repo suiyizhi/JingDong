@@ -9,4 +9,5 @@ public interface Api {
     String LOGIN_URL = "https://www.zhaoapi.cn/user/login";
     String GETCARTS_URL="https://www.zhaoapi.cn/product/getCarts";
     String UPDATECARTS_URL = "https://www.zhaoapi.cn/product/updateCarts";
+    String DELETECART_URL = "https://www.zhaoapi.cn/product/deleteCart";
 }

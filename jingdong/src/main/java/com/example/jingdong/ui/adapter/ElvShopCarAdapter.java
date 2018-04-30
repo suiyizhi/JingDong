@@ -9,19 +9,24 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.jingdong.R;
 import com.example.jingdong.bean.SellerBean;
 import com.example.jingdong.bean.ShopCarBean;
+import com.example.jingdong.presenter.DeleteCarPresenterImp;
 import com.example.jingdong.presenter.GetShopCarPresenterImp;
 import com.example.jingdong.presenter.UpdateCarPresenterImp;
+import com.example.jingdong.ui.inter.AddCarView;
+import com.example.jingdong.ui.inter.DeleteCarView;
 import com.example.jingdong.ui.inter.UpdateCarView;
+import com.example.jingdong.ui.view.AddSubView;
 import com.example.jingdong.util.SpUtil;
 
 import java.util.List;
 
-public class ElvShopCarAdapter extends BaseExpandableListAdapter implements UpdateCarView {
+public class ElvShopCarAdapter extends BaseExpandableListAdapter implements UpdateCarView, DeleteCarView {
 
     private List<SellerBean> groupList;
     private List<List<ShopCarBean.DataBean.ListBean>> childList;
@@ -39,6 +44,8 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
     private final String uid;
     private final String token;
     private boolean checked;
+    private boolean allChecked;
+    private final DeleteCarPresenterImp deleteCarPresenterImp;
 
     public ElvShopCarAdapter(List<SellerBean> groupList, List<List<ShopCarBean.DataBean.ListBean>> childList, Context context,
                              GetShopCarPresenterImp getShopCarPresenterImp, ProgressDialog progressDialog) {
@@ -53,6 +60,8 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
         token = SpUtil.getString(context, "token", "");
         //绑定更新
         updateCarPresenterImp = new UpdateCarPresenterImp(this);
+        //绑定删除
+        deleteCarPresenterImp = new DeleteCarPresenterImp(this);
     }
 
     @Override
@@ -126,7 +135,7 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
     }
 
     @Override
-    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final ChildViewHolder childViewHolder;
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.elv_shopcarsellerpro_item, null);
@@ -141,9 +150,10 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
         childViewHolder.ck_product.setChecked(listBean.getSelected() == 1 ? true : false);
         //设置数据
         childViewHolder.tv_producttitle.setText(listBean.getTitle());
-        childViewHolder.tv_productprice.setText("￥" + listBean.getPid() + "");
+        childViewHolder.tv_productprice.setText("￥" + listBean.getPrice() + "");
         Glide.with(context).load(listBean.getImages().split("\\|")[0]).into(childViewHolder.img_product);
-
+        //设置数量
+        childViewHolder.addsubcar.setNum(listBean.getNum() + "");
         //给子条目的CheckBox设置点击事件
         childViewHolder.ck_product.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +172,65 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
                 updateCarPresenterImp.updateCar(uid, sellerid, pid, num, childChecked ? "1" : "0", token);
             }
         });
+
+        //给加号设置点击事件
+        childViewHolder.addsubcar.setAddOnclickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.show();
+                state = GETCARS;
+                //获取sellerid
+                String sellerid = groupList.get(groupPosition).getSellerid();
+                //获取pid
+                int pid = listBean.getPid();
+                //获取数量
+                int num = listBean.getNum();
+                num++;
+                //是否选中
+                String isChecked = childViewHolder.ck_product.isChecked() ? "1" : "0";
+                //调用更新购物车的接口
+                updateCarPresenterImp.updateCar(uid, sellerid, pid + "", num + "", isChecked, token);
+            }
+        });
+
+        //给减号设置点击事件
+        childViewHolder.addsubcar.setSubOnclickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.show();
+                state = GETCARS;
+                //获取当前商品的数量
+                int num = listBean.getNum();
+                if (num <= 1) {
+                    progressDialog.dismiss();
+                    Toast.makeText(context, "数量不能小于1!", Toast.LENGTH_SHORT).show();
+                } else {
+                    num--;
+                    //获取sellerid
+                    String sellerid = groupList.get(groupPosition).getSellerid();
+                    //获取pid
+                    String pid = listBean.getPid() + "";
+                    //是否选中
+                    String isChecked = childViewHolder.ck_product.isChecked() ? "1" : "0";
+                    //更新服务器上购物车状态
+                    updateCarPresenterImp.updateCar(uid, sellerid, pid, num + "", isChecked, token);
+                }
+            }
+        });
+
+        //给删除设置点击事件
+        childViewHolder.tv_del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.show();
+                state = GETCARS;
+                //获取商品的pid
+                int pid = listBean.getPid();
+                //开始删除购物车里的选项
+                deleteCarPresenterImp.deleteCar(uid, pid + "", token);
+            }
+        });
+
         return convertView;
     }
 
@@ -192,6 +261,7 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
         public ImageView img_product;
         public TextView tv_producttitle;
         public TextView tv_productprice;
+        public AddSubView addsubcar;
 
         public ChildViewHolder(View rootView) {
             this.rootView = rootView;
@@ -200,6 +270,7 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
             this.img_product = (ImageView) rootView.findViewById(R.id.img_product);
             this.tv_producttitle = (TextView) rootView.findViewById(R.id.tv_producttitle);
             this.tv_productprice = (TextView) rootView.findViewById(R.id.tv_productprice);
+            this.addsubcar = (AddSubView) rootView.findViewById(R.id.addsubcar);
         }
 
     }
@@ -221,13 +292,41 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
                 if (productIndex < childList.get(groupPosition).size()) {
                     //可以继续更新商品
                     updateProductInSeller();
-                }else {
+                } else {
                     //商品已经全部更新完查询购物车
-                    state=GETCARS;
+                    state = GETCARS;
                     updateSuccess();
                 }
                 break;
+            case UPDATE_SELLER:
+                //遍历所有商家下的商品，并更新状态
+                productIndex++;
+                //下标是否越界
+                if (productIndex<childList.get(groupPosition).size()){
+                    //可以继续更新商品
+                    updateProductInSeller(allChecked);
+                }else {
+                    //第一个商家的商品已经全部更新完，请查询购物车
+                    productIndex=0;
+                    groupPosition++;
+                    if (groupPosition<groupList.size()){
+                        //可以继续更新商品
+                        updateProductInSeller(allChecked);
+                    }else {
+                        //所有商家的所有商品已经全部更新完，查询购物车
+                        state=GETCARS;
+                        updateSuccess();
+                    }
+                }
+                break;
         }
+    }
+
+    //删除购物车成功的回调
+    @Override
+    public void delSuccess() {
+        //查询购物车
+        getShopCarPresenterImp.getShopCar(uid, token);
     }
 
     //更新商家下的商品状态
@@ -241,6 +340,44 @@ public class ElvShopCarAdapter extends BaseExpandableListAdapter implements Upda
         int num = listBean.getNum();
         //开始更新
         updateCarPresenterImp.updateCar(uid, sellerid, pid + "", num + "", checked ? "1" : "0", token);
+    }
+
+    private void updateProductInSeller(boolean bool) {
+        //获取sellerid
+        SellerBean sellerBean = groupList.get(groupPosition);
+        String sellerid = sellerBean.getSellerid();
+        //获取pid
+        ShopCarBean.DataBean.ListBean listBean = childList.get(groupPosition).get(productIndex);
+        int pid = listBean.getPid();
+        int num = listBean.getNum();
+        //开始更新
+        updateCarPresenterImp.updateCar(uid, sellerid, pid + "", num + "", bool ? "1" : "0", token);
+    }
+
+    //计算数量和价钱
+    public String[] computeMoneyAndNum() {
+        double sum = 0;
+        int num = 0;
+        for (int i = 0; i < groupList.size(); i++) {
+            for (int j = 0; j < childList.get(i).size(); j++) {
+                //判断商品是否选中
+                ShopCarBean.DataBean.ListBean listBean = childList.get(i).get(j);
+                if (listBean.getSelected() == 1) {
+                    //该商品为选中状态
+                    sum += listBean.getPrice() * listBean.getNum();
+                    num += listBean.getNum();
+                }
+            }
+        }
+        return new String[]{sum + "", num + ""};
+    }
+
+    //全选复选框更新状态
+    public void changeAllState(boolean bool) {
+        this.allChecked = bool;
+        state = UPDATE_SELLER;
+        //遍历商家下的商品修改状态
+        updateProductInSeller(bool);
     }
 
 }

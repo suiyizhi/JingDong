@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="2dp"
-    android:layout_height="65dp">
+    android:layout_height="wrap_content"
+    android:padding="2dp">
 
     <CheckBox
         android:id="@+id/ck_product"
@@ -16,11 +16,11 @@
         android:layout_width="45dp"
         android:layout_height="30dp"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         android:background="#ff0000"
         android:gravity="center"
         android:text="删除"
-        android:layout_centerVertical="true"
         android:textColor="#fff" />
 
     <LinearLayout
@@ -40,32 +40,39 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
             android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_producttitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:text="title"
-                />
+                android:textSize="11sp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/tv_productprice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
+                    android:layout_alignParentBottom="true"
                     android:text="12312"
-                    android:textSize="12sp"
-                    android:textColor="#f00" />
-            </LinearLayout>
+                    android:textColor="#f00"
+                    android:textSize="10sp" />
+
+                <com.example.jingdong.ui.view.AddSubView
+                    android:id="@+id/addsubcar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="3dp"></com.example.jingdong.ui.view.AddSubView>
+
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
