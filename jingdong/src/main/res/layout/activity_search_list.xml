@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.activity.GoodsListActivity">
+    tools:context=".ui.activity.SearchListActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
             android:layout_marginTop="1dp"
             android:layout_marginLeft="4dp">
             <ImageView
-                android:id="@+id/img_listback"
+                android:id="@+id/img_searchback"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/leftjiantou"
@@ -31,7 +31,7 @@
         </LinearLayout>
 
         <!--输入框-->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="275dp"
             android:layout_height="35dp"
             android:background="@drawable/shape_search"
@@ -41,10 +41,12 @@
             >
 
             <TextView
+                android:id="@+id/tv_keywords"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="请输入搜索内容"
                 android:layout_marginLeft="5dp"
+                android:layout_marginTop="4dp"
                 android:textSize="16sp"
                 />
 
@@ -52,10 +54,12 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/root"
-                android:layout_marginLeft="114dp"
+                android:layout_gravity="right"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
                 />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

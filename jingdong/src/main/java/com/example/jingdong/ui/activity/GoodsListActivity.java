@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.jingdong.R;
 import com.example.jingdong.bean.GoodsListBean;
@@ -18,6 +20,7 @@ public class GoodsListActivity extends AppCompatActivity implements GoodsListVie
 
     private RecyclerView rv_goodslist;
     private GoodsListPresenterImp goodsListPresenterImp;
+    private ImageView img_listback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,16 @@ public class GoodsListActivity extends AppCompatActivity implements GoodsListVie
     }
 
     private void initView() {
+        img_listback = findViewById(R.id.img_listback);
         rv_goodslist = (RecyclerView) findViewById(R.id.rv_goodslist);
         rv_goodslist.setLayoutManager(new LinearLayoutManager(this));
+        //设置点击回退监听
+        img_listback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

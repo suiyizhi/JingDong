@@ -11,15 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dash.zxinglibrary.activity.CaptureActivity;
 import com.dash.zxinglibrary.activity.CodeUtils;
+import com.dash.zxinglibrary.view.ViewfinderView;
 import com.example.jingdong.R;
 import com.example.jingdong.bean.AdBean;
 import com.example.jingdong.bean.CatagoryBean;
 import com.example.jingdong.presenter.CatagoryPresenterImp;
 import com.example.jingdong.presenter.AdPresenterImp;
+import com.example.jingdong.ui.activity.SearchActivity;
 import com.example.jingdong.ui.adapter.RvClassAdapter;
 import com.example.jingdong.ui.adapter.RvRecommendAdapter;
 import com.example.jingdong.ui.adapter.RvSecKillAdapter;
@@ -42,6 +45,7 @@ public class HomePageFragment extends Fragment implements AdView, CatagoryView {
     private RecyclerView rvSecKill;
     private RecyclerView rvRecommend;
     private ImageView img_zxing;
+    private TextView tv_inputSearch;
 
     @Nullable
     @Override
@@ -74,6 +78,16 @@ public class HomePageFragment extends Fragment implements AdView, CatagoryView {
     }
 
     private void initView(View view) {
+        tv_inputSearch = view.findViewById(R.id.tv_inputSearch);
+        //搜索点击跳转
+        tv_inputSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
         ad_banner = (Banner) view.findViewById(R.id.ad_banner);
         ad_banner.setImageLoader(new GlideImageLoader());
         rvClass = (RecyclerView) view.findViewById(R.id.rvClass);
